@@ -1,110 +1,199 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#08469E">
-  <title>Carteirinha Digital - Espaço Universitário</title>
-  <link rel="manifest" href="./manifest.json">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: #f4f6f9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#0B469E">
+    <title>Carteirinha Digital - Espaço Universitário Itaboraí</title>
+    <link rel="manifest" href="./manifest.json">
     
-    .header { background-color: #08469E; width: 100%; max-width: 480px; padding: 18px 20px 95px 20px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; color: white; position: relative; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
-    .top-bar img { height: 38px; object-fit: contain; }
+    <!-- Fonte Montserrat oficial -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     
-    .datetime-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .badge-time { border: 1.5px solid rgba(255,255,255,0.85); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
-    
-    .logo-area { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-    .logo-area img { height: 48px; object-fit: contain; }
+    <!-- CSS Oficial extraído do site -->
+    <link rel="stylesheet" type="text/css" href="./carteirinha-digital.css">
 
-    .photo-wrapper { width: 135px; height: 145px; background: #e9ecef; border-radius: 16px; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin: -72px auto 18px auto; overflow: hidden; position: relative; z-index: 2; }
-    .photo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-    .card-body { width: 100%; max-width: 480px; padding: 0 24px 30px 24px; text-align: center; }
-    .label { font-size: 11px; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .student-name { font-size: 22px; font-weight: 800; color: #08469E; line-height: 1.25; margin-bottom: 20px; }
-    .student-cpf { font-size: 20px; font-weight: 800; color: #08469E; margin-bottom: 26px; }
-
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; text-align: left; max-width: 340px; margin: 0 auto; }
-    .info-value { font-size: 15px; font-weight: 800; color: #08469E; }
-  </style>
+    <style>
+        /* Ajustes para garantir proporção total na tela do celular e funcionamento do modal offline */
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-image: url('./image/bg.png') !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            background-position: center !important;
+        }
+        .container-geral {
+            width: 100%;
+            max-width: 100%;
+        }
+        /* Estilo básico do modal caso clique nas 3 barras */
+        .modal-offline {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 70, 158, 0.97);
+            z-index: 9999;
+            color: white;
+            padding: 20px;
+            flex-direction: column;
+        }
+        .modal-offline.ativo {
+            display: flex;
+        }
+    </style>
 </head>
-<body>
+<body style="--color-primary: #0B469E;">
 
-  <div class="header">
-    <div class="top-bar">
-      <img src="./assets/brasao.png" alt="Prefeitura de Itaboraí">
-      <div style="font-size: 24px;">☰</div>
+    <div class="navbar-carteirinha">
+        <div class="navbar-carteirinha-container">
+            <div>
+                <a href="./index.html">
+                    <img src="./image/logo-prefeitura.png" alt="logo-prefeitura">
+                </a>
+            </div>
+            <div>
+                <button class="icon-menu" type="button" id="btn-abrir-menu">
+                    <img src="./image/icon-menu.png" alt="Icone menu">
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="datetime-row">
-      <div class="badge-time" id="data-atual">SEG 23/11/2026</div>
-      <div class="badge-time" id="hora-atual">15:05</div>
+    <div class="container-geral">
+        <input type="hidden" value="1" id="turno">
+        <input type="hidden" id="id_aluno" value="4769">
+        <input type="hidden" value="aluno" id="prefixo">
+        <input type="hidden" value="2" id="cidade">
+
+        <div class="header">
+            <div class="header-content">
+                <div class="wrapper-data-hora">
+                    <div class="data-hora" id="data-atual">Seg 23/11/2026</div>
+                    <div class="data-hora" id="hora-atual">16:08</div>
+                </div>
+                <div class="logo-eu">
+                    <img src="./image/logo-eu.png" alt="Espaço Universitário">
+                </div>
+
+                <div class="wrapper-foto">
+                    <img src="./image/foto.jpg" id="foto_carteirinha" alt="Foto da pessoa">
+                    <div class="icon-upload-image">
+                        <label for="foto">
+                            <img src="./image/icon-camera.png" alt="Icone camera">
+                        </label>
+                        <input type="file" accept="image/*" capture="camera" id="foto">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARTEIRINHA HABILITADA -->
+        <div class="dados-aluno">
+            <h6 class="titulo-dados">ALUNO</h6>
+            <p class="nome-aluno">Joao Pedro Rodriguez da Costa</p>
+            <div class="box-cpf">
+                <h6 class="titulo-dados">cpf</h6>
+                <p class="numero-cpf">193.124.627-09</p>
+            </div>
+        </div>
+
+        <div class="dados-instituicao-aluno">
+            <div class="container-turno-matricula">
+                <div>
+                    <h6 class="titulo-dados">instituição</h6>
+                    <p class="texto-instituicao-aluno">UFF</p>
+                </div>
+                <div>
+                    <h6 class="titulo-dados">período</h6>
+                    <p class="texto-instituicao-aluno">2026.2</p>
+                </div>
+            </div>
+            <div class="container-turno-matricula">
+                <div>
+                    <h6 class="titulo-dados">turno</h6>
+                    <p class="texto-instituicao-aluno">Integral</p>
+                </div>
+                <div>
+                    <h6 class="titulo-dados">matrícula</h6>
+                    <p class="texto-instituicao-aluno">18575973</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="logo-area">
-      <img src="./assets/logo-ie.png" alt="Espaço Universitário">
+    <!-- Modal simples ao clicar nas 3 barras -->
+    <div class="modal-offline" id="modal-menu">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <img src="./image/logo-prefeitura.png" alt="Prefeitura" style="height: 40px;">
+            <button type="button" id="btn-fechar-menu" style="background: none; border: none; color: white; font-size: 32px; cursor: pointer;">×</button>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="font-size: 16px; opacity: 0.9;">Modo Offline Ativo</p>
+            <p style="font-size: 13px; opacity: 0.7; margin-top: 8px;">Espaço Universitário Itaboraí</p>
+        </div>
     </div>
-  </div>
 
-  <div class="photo-wrapper">
-    <img src="./assets/foto.jpg" alt="Foto do Aluno">
-  </div>
+    <script>
+        // 1. Atualiza data e hora no formato exato ("Seg 23/11/2026" e "16:08")
+        function atualizarRelogio() {
+            const agora = new Date();
+            const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const diaSemana = dias[agora.getDay()];
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const ano = agora.getFullYear();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
 
-  <div class="card-body">
-    <div class="label">ALUNO</div>
-    <div class="student-name">Joao Pedro Rodriguez da<br>Costa</div>
+            document.getElementById('data-atual').textContent = `${diaSemana} ${dia}/${mes}/${ano}`;
+            document.getElementById('hora-atual').textContent = `${horas}:${minutos}`;
+        }
+        atualizarRelogio();
+        setInterval(atualizarRelogio, 1000);
 
-    <div class="label">CPF</div>
-    <div class="student-cpf">193.124.627-09</div>
+        // 2. Faz o input da câmera/galeria funcionar e salvar a foto no celular
+        const inputFoto = document.getElementById('foto');
+        const imgCarteirinha = document.getElementById('foto_carteirinha');
 
-    <div class="info-grid">
-      <div>
-        <div class="label">INSTITUIÇÃO</div>
-        <div class="info-value">UFF</div>
-      </div>
-      <div>
-        <div class="label">PERÍODO</div>
-        <div class="info-value">2026.2</div>
-      </div>
-      <div>
-        <div class="label">TURNO</div>
-        <div class="info-value">MANHÃ</div>
-      </div>
-      <div>
-        <div class="label">MATRÍCULA</div>
-        <div class="info-value">18575973</div>
-      </div>
-    </div>
-  </div>
+        const fotoSalva = localStorage.getItem('foto_aluno_offline');
+        if (fotoSalva) {
+            imgCarteirinha.src = fotoSalva;
+        }
 
-  <script>
-    // 1. Atualização do relógio e data locais
-    function atualizarRelogio() {
-      const agora = new Date();
-      const dias = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
-      const diaSemana = dias[agora.getDay()];
-      const dia = String(agora.getDate()).padStart(2, '0');
-      const mes = String(agora.getMonth() + 1).padStart(2, '0');
-      const ano = agora.getFullYear();
-      const horas = String(agora.getHours()).padStart(2, '0');
-      const minutos = String(agora.getMinutes()).padStart(2, '0');
+        inputFoto.addEventListener('change', function(e) {
+            const arquivo = e.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(evento) {
+                    imgCarteirinha.src = evento.target.result;
+                    try {
+                        localStorage.setItem('foto_aluno_offline', evento.target.result);
+                    } catch (err) {
+                        console.warn('Imagem muito grande para salvar no cache local.');
+                    }
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        });
 
-      document.getElementById('data-atual').textContent = `${diaSemana} ${dia}/${mes}/${ano}`;
-      document.getElementById('hora-atual').textContent = `${horas}:${minutos}`;
-    }
-    atualizarRelogio();
-    setInterval(atualizarRelogio, 1000);
+        // 3. Controle do botão das 3 barras
+        document.getElementById('btn-abrir-menu').addEventListener('click', () => {
+            document.getElementById('modal-menu').classList.add('ativo');
+        });
+        document.getElementById('btn-fechar-menu').addEventListener('click', () => {
+            document.getElementById('modal-menu').classList.remove('ativo');
+        });
 
-    // 2. Registro do Service Worker para funcionamento offline
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
-  </script>
+        // 4. Service Worker para funcionamento 100% offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
 </body>
 </html>
