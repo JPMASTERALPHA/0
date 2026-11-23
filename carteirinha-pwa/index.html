@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#08469E">
+  <title>Carteirinha Digital - Espaço Universitário</title>
+  <link rel="manifest" href="./manifest.json">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+    
+    .header { background-color: #08469E; width: 100%; max-width: 480px; padding: 18px 20px 95px 20px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; color: white; position: relative; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .top-bar img { height: 38px; object-fit: contain; }
+    
+    .datetime-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .badge-time { border: 1.5px solid rgba(255,255,255,0.85); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
+    
+    .logo-area { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .logo-area img { height: 48px; object-fit: contain; }
+
+    .photo-wrapper { width: 135px; height: 145px; background: #e9ecef; border-radius: 16px; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin: -72px auto 18px auto; overflow: hidden; position: relative; z-index: 2; }
+    .photo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-body { width: 100%; max-width: 480px; padding: 0 24px 30px 24px; text-align: center; }
+    .label { font-size: 11px; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .student-name { font-size: 22px; font-weight: 800; color: #08469E; line-height: 1.25; margin-bottom: 20px; }
+    .student-cpf { font-size: 20px; font-weight: 800; color: #08469E; margin-bottom: 26px; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; text-align: left; max-width: 340px; margin: 0 auto; }
+    .info-value { font-size: 15px; font-weight: 800; color: #08469E; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="top-bar">
+      <img src="./assets/brasao.png" alt="Prefeitura de Itaboraí">
+      <div style="font-size: 24px;">☰</div>
+    </div>
+
+    <div class="datetime-row">
+      <div class="badge-time" id="data-atual">SEG 23/11/2026</div>
+      <div class="badge-time" id="hora-atual">15:05</div>
+    </div>
+
+    <div class="logo-area">
+      <img src="./assets/logo-ie.png" alt="Espaço Universitário">
+    </div>
+  </div>
+
+  <div class="photo-wrapper">
+    <img src="./assets/foto.jpg" alt="Foto do Aluno">
+  </div>
+
+  <div class="card-body">
+    <div class="label">ALUNO</div>
+    <div class="student-name">Joao Pedro Rodriguez da<br>Costa</div>
+
+    <div class="label">CPF</div>
+    <div class="student-cpf">193.124.627-09</div>
+
+    <div class="info-grid">
+      <div>
+        <div class="label">INSTITUIÇÃO</div>
+        <div class="info-value">UFF</div>
+      </div>
+      <div>
+        <div class="label">PERÍODO</div>
+        <div class="info-value">2026.2</div>
+      </div>
+      <div>
+        <div class="label">TURNO</div>
+        <div class="info-value">MANHÃ</div>
+      </div>
+      <div>
+        <div class="label">MATRÍCULA</div>
+        <div class="info-value">18575973</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Atualização do relógio e data locais
+    function atualizarRelogio() {
+      const agora = new Date();
+      const dias = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+      const diaSemana = dias[agora.getDay()];
+      const dia = String(agora.getDate()).padStart(2, '0');
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
+      const ano = agora.getFullYear();
+      const horas = String(agora.getHours()).padStart(2, '0');
+      const minutos = String(agora.getMinutes()).padStart(2, '0');
+
+      document.getElementById('data-atual').textContent = `${diaSemana} ${dia}/${mes}/${ano}`;
+      document.getElementById('hora-atual').textContent = `${horas}:${minutos}`;
+    }
+    atualizarRelogio();
+    setInterval(atualizarRelogio, 1000);
+
+    // 2. Registro do Service Worker para funcionamento offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
